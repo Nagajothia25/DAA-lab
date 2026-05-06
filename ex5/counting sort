@@ -1,0 +1,65 @@
+#include <iostream>
+using namespace std;
+
+int main()
+{
+    int n;
+    cout << "Enter number of elements: ";
+    cin >> n;
+
+    int A[n], Count[n], S[n];
+
+    cout << "Enter elements:\n";
+    for (int i = 0; i < n; i++)
+        cin >> A[i];
+
+
+    for (int i = 0; i < n; i++)
+        Count[i] = 0;
+
+    cout << "\nArray A[0.." << n - 1 << "]:\n";
+    for (int i = 0; i < n; i++)
+        cout << A[i] << " ";
+    cout << "\n";
+
+
+    cout << "\nInitially Count[]:\n";
+    for (int i = 0; i < n; i++)
+        cout << Count[i] << " ";
+    cout << "\n";
+
+
+    for (int i = 0; i < n - 1; i++)
+    {
+        for (int j = i + 1; j < n; j++)
+        {
+            if (A[i] < A[j])
+                Count[j]++;
+            else
+                Count[i]++;
+        }
+        cout << "\nAfter pass i = " << i << ":\n";
+        cout << "Count[]: ";
+        for (int k = 0; k < n; k++)
+            cout << Count[k] << " ";
+        cout << "\n";
+    }
+
+
+    cout << "\nFinal Count[]:\n";
+    for (int i = 0; i < n; i++)
+        cout << Count[i] << " ";
+    cout << "\n";
+
+
+    for (int i = 0; i < n; i++)
+        S[Count[i]] = A[i];
+
+
+    cout << "\nArray S[0.." << n - 1 << "]:\n";
+    for (int i = 0; i < n; i++)
+        cout << S[i] << " ";
+    cout << "\n";
+
+    return 0;
+}
