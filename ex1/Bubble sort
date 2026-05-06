@@ -1,0 +1,65 @@
+#include &lt;iostream&gt;
+using namespace std;
+
+// Function prototype (declaration)
+void sort(int *arr, int n);
+void displayArray(int *arr, int n);
+
+// Function definition for sort
+void sort(int *arr, int n) {
+int min_idx, i, j, temp;
+// Outer loop iterates through the unsorted array
+for (i = 0; i &lt; n - 1; i++) {
+// Assume the current index is the minimum
+min_idx = i;
+
+// Inner loop finds the actual minimum element in the remaining array
+for (j = i + 1; j &lt; n; j++) {
+if (arr[j] &lt; arr[min_idx]) {
+min_idx = j;
+}
+}
+
+// Swap the found minimum element with the element at the current outer loop index (i)
+// This swap must happen OUTSIDE the inner loop, but INSIDE the outer loop.
+temp = arr[min_idx];
+arr[min_idx] = arr[i];
+arr[i] = temp;
+}
+}
+
+// Function definition for displayArray
+void displayArray(int *arr, int n) {
+int k;
+cout &lt;&lt; &quot;Sorted Array: &quot;;
+for (k = 0; k &lt; n; k++) {
+// Added space for readability
+cout &lt;&lt; arr[k] &lt;&lt; &quot; &quot;;
+}
+cout &lt;&lt; endl;
+}
+
+// Main function
+int main() {
+int *arr;
+int n, i;
+cout &lt;&lt; &quot;Enter array size: &quot;;
+cin &gt;&gt; n;
+
+// Dynamically allocate memory
+arr = new int[n];
+
+cout &lt;&lt; &quot;Enter array elements:&quot; &lt;&lt; endl;
+for (i = 0; i &lt; n; i++) {
+cin &gt;&gt; arr[i];
+}
+
+// Call the functions
+sort(arr, n);
+displayArray(arr, n);
+
+// Deallocate memory after use
+delete[] arr;
+
+return 0;
+}
