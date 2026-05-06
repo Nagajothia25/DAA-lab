@@ -1,0 +1,54 @@
+#include<iostream>
+using namespace std;
+void heapBottomUp(int h[],int n){
+        int k,v,j;
+        bool heap;
+        for(int i=n/2;i>=1;i--){
+           k=i;
+           v=h[k];
+           heap=false;
+           while(!heap&&2*k<=n){
+              j=2*k;
+              if(j<n){
+                 if(h[j]<h[j+1]){
+                    j=j+1;
+                 }
+              }
+              if(v>=h[j]){
+                 heap=true;
+              }
+              else{
+                 h[k]=h[j];
+                 k=j;
+              }
+           }
+           h[k]=v;
+        }
+}
+void heapSort(int h[],int n){
+   int temp;
+   heapBottomUp(h,n);
+   for(int i=n;i>=2;i--){
+      temp=h[1];
+      h[1]=h[i];
+      h[i]=temp;
+      heapBottomUp(h,i-1);
+   }
+}
+int main() {
+   int h[100],n;
+   int i;
+   cout<<"Enter number of elements:";
+   cin>>n;
+   cout<<"Enter elements:\n";
+   for(i=1;i<=n;i++){
+      cin>>h[i];
+   }
+   heapSort(h,n);
+   cout<<"Sorted Array\n";
+   for(i=1;i<=n;i++){
+      cout<<h[i]<<" ";
+   }
+   cout<<endl;
+   return 0;
+}
