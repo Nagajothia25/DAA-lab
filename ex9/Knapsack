@@ -1,0 +1,118 @@
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <algorithm>
+
+using namespace std;
+
+// Structure for items
+struct Item {
+    int id, w, v;
+    double r;
+};
+
+// Structure for tree nodes
+struct Node {
+    int lvl, wt, val;
+    double ub;
+    vector<int> picked;
+
+    // Normal Constructor to replace the {} initialization
+    Node(int l, int w, int v, double u, vector<int> p) {
+        lvl = l; wt = w; val = v; ub = u; picked = p;
+    }
+
+    // Comparison for the priority queue
+    bool operator<(const Node& o) const {
+        return ub < o.ub;
+    }
+};
+
+// Regular function to replace the [&] lambda
+double calculateBound(int l, int w, int v, int n, int W, const vector<Item>& items) {
+    if (w >= W) return 0.0;
+    double b = v;
+    int tw = w;
+    for (int j = l + 1; j < n; j++) {
+        if (tw + items[j].w <= W) {
+            tw += items[j].w;
+            b += items[j].v;
+        } else {
+            b += (W - tw) * items[j].r;
+            break;
+        }
+    }
+    return b;
+}
+
+int main() {
+    int n, W, maxP = 0;
+    vector<int> bestItems;
+
+    cout << "Enter N and Capacity: ";
+    cin >> n >> W;
+
+    vector<Item> items(n);
+    for (int i = 0; i < n; i++) {
+        items[i].id = i + 1;
+        cout << "Item " << i + 1 << " (weight value): ";
+        cin >> items[i].w >> items[i].v;
+        items[i].r = (double)items[i].v / items[i].w;
+    }
+
+    // Sort items by ratio descending
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = i + 1; j < n; j++) {
+            if (items[i].r < items[j].r) swap(items[i], items[j]);
+        }
+    }
+
+    priority_queue<Node> pq;
+
+    // Initialize root using the constructor
+    double rootBound = calculateBound(-1, 0, 0, n, W, items);
+    vector<int> emptyPath;
+    pq.push(Node(-1, 0, 0, rootBound, emptyPath));
+
+    while (!pq.empty()) {
+        Node u = pq.top();
+        pq.pop();
+
+        if (u.ub <= maxP || u.lvl == n - 1) continue;
+
+        int next = u.lvl + 1;
+
+        // Branch 1: WITH Item
+        int nw = u.wt + items[next].w;
+        int nv = u.val + items[next].v;
+        if (nw <= W) {
+            vector<int> nextPicked = u.picked;
+            nextPicked.push_back(items[next].id);
+            double nb = calculateBound(next, nw, nv, n, W, items);
+
+            cout << "Level " << next << ": WITH item " << items[next].id << " | V=" << nv << " UB=" << nb << endl;
+
+            if (nv > maxP) {
+                maxP = nv;
+                bestItems = nextPicked;
+            }
+            if (nb > maxP) {
+                pq.push(Node(next, nw, nv, nb, nextPicked));
+            }
+        }
+
+        // Branch 2: WITHOUT Item
+        double nb_wo = calculateBound(next, u.wt, u.val, n, W, items);
+        cout << "Level " << next << ": WITHOUT item " << items[next].id << " | V=" << u.val << " UB=" << nb_wo << endl;
+
+        if (nb_wo > maxP) {
+            pq.push(Node(next, u.wt, u.val, nb_wo, u.picked));
+        }
+    }
+
+    cout << "\nOptimal Value: " << maxP << "\nItems Picked: ";
+    for (int i = 0; i < bestItems.size(); i++) cout << bestItems[i] << " ";
+    cout << endl;
+
+    return 0;
+}
