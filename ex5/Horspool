@@ -1,0 +1,79 @@
+#include <iostream>
+#include <string>
+#include <vector>
+
+using namespace std;
+
+int main() {
+    string text, pattern;
+    cout << "Enter text (lowercase only): ";
+    cin >> text;
+    cout << "Enter pattern (lowercase only): ";
+    cin >> pattern;
+
+    int n = text.length();
+    int m = pattern.length();
+
+    // 1. Shift Table Construction (Size 26 for 'a'-'z')
+    int shift[26];
+    for (int i = 0; i < 26; i++) {
+        shift[i] = m;
+    }
+    for (int j = 0; j < m - 1; j++) {
+        // Map characters 'a'-'z' to 0-25
+        shift[pattern[j] - 'a'] = m - 1 - j;
+    }
+
+//display the Shift Table for characters present in the pattern
+    cout << "\nShift Table:\n";
+        for (int i = 0; i < 26; i++) {
+        char currentChar = (char)(i + 'a');
+        // This checks if the character exists anywhere in your pattern
+        if (pattern.contains(currentChar)) {
+           cout << currentChar << " : " << shift[i] << endl;
+      }
+    }
+    int i = m - 1; // Current alignment index in text
+    int comp = 0;
+    int alignments = 0;
+    bool found = false;
+
+    // 2. Searching Phase
+    while (i <= n - 1) {
+        alignments++;
+        cout << "\nAlignment " << alignments << ":\n";
+        cout << text << endl;
+
+        // Print spaces to align the pattern under the text
+        for (int s = 0; s < i - (m - 1); s++) cout << " ";
+        cout << pattern << endl;
+
+        int k = 0;
+        // Compare pattern from right to left
+        while (k < m && pattern[m - 1 - k] == text[i - k]) {
+            comp++;
+            k++;
+        }
+
+        if (k == m) {
+            cout << "Pattern found at index: " << i - m + 1 << endl;
+            found = true;
+            break;
+        } else {
+            // Count the mismatch comparison if the inner loop broke early
+            comp++;
+            // Shift based on the character in the text aligned with the end of the pattern
+            i += shift[text[i] - 'a'];
+        }
+    }
+
+    if (!found) {
+        cout << "\nMismatch: Pattern not found." << endl;
+    }
+
+    cout << "Total comparisons: " << comp << endl;
+    cout << "Total alignments: " << alignments << endl;
+
+    return 0;
+}
+
