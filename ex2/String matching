@@ -1,0 +1,47 @@
+#include<iostream>
+#include<string>
+using namespace std;
+void bruteforcesearch(string t,string p){
+   int alignment=0,comparison=0;
+   int i,j,k;
+   bool found=false;
+   int n=t.length();
+   int m=p.length();
+   cout<<"\n"<<t<<"(Text)"<<endl;
+   for(i=0;i<=n-m;i++){
+      alignment++;
+      for(k=0;k<i;k++) {
+        cout<<" ";
+      }
+      cout<<p<<endl;
+      j=0;
+      while(j<m){
+         comparison++;
+         if(p[j]==t[i+j]){
+            j++;
+         }
+         else {
+            break;
+         }
+      }
+   if(j==m){
+      found=true;
+      cout<<"pattern found at index :"<<i<<endl;
+      break;
+   }
+   }
+   if(!found){
+      cout<<"pattern not found";
+   }
+   cout<<"number of comparisons:"<<comparison<<endl;
+   cout<<"number of alignments:"<<alignment<<endl;
+}
+int main() {
+   string text,pattern;
+   cout<<"enter the text:";
+   cin>>text;
+   cout<<"enter pattern: ";
+   cin>>pattern;
+   bruteforcesearch(text,pattern);
+   return 0;
+}
